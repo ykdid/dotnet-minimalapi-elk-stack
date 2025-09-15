@@ -42,7 +42,7 @@ docker compose up -d
 3. Wait for all services to start (this might take a few minutes for Elasticsearch and Kibana)
 
 4. The following services will be available:
-- API: http://localhost:5000
+- API: http://localhost:5001
 - Elasticsearch: http://localhost:9200
 - Kibana: http://localhost:5601
 
@@ -53,7 +53,7 @@ Accepts log data and stores it in Elasticsearch.
 
 Example request:
 ```bash
-curl -X POST http://localhost:5000/api/logs \
+curl -X POST http://localhost:5001/api/logs \
   -H "Content-Type: application/json" \
   -d '{
     "message": "Test log message",
