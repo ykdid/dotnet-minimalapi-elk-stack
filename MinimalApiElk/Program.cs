@@ -6,7 +6,17 @@ using Serilog.Sinks.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Elasticsearch client
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 var elasticUrl = builder.Configuration["ElasticConfiguration:Uri"] ?? "http://localhost:9200";
 var defaultIndex = builder.Configuration["ElasticConfiguration:DefaultIndex"] ?? "logs";
 
@@ -15,7 +25,6 @@ var settings = new ConnectionSettings(new Uri(elasticUrl))
 
 var client = new ElasticClient(settings);
 
-// Configure Serilog
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .Enrich.WithMachineName()

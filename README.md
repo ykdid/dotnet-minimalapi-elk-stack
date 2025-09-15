@@ -4,7 +4,7 @@ This project demonstrates how to implement a .NET Minimal API with ELK (Elastics
 
 ## Technologies Used
 
-- .NET 8.0
+- .NET 9.0
 - NEST (Elasticsearch .NET Client)
 - Serilog
 - Docker
