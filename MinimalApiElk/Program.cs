@@ -19,6 +19,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Build().UseCors("AllowAll");
+
 var elasticUrl = builder.Configuration["ElasticConfiguration:Uri"] ?? "http://localhost:9200";
 var defaultIndex = builder.Configuration["ElasticConfiguration:DefaultIndex"] ?? "logs";
 
