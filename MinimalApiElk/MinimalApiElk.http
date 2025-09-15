@@ -1,0 +1,6 @@
+@MinimalApiElk_HostAddress = http://localhost:5250
+
+GET {{MinimalApiElk_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalApiElk", "MinimalApiElk\MinimalApiElk.csproj", "{51149B89-1230-2D4C-728C-98515CBA906C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51149B89-1230-2D4C-728C-98515CBA906C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51149B89-1230-2D4C-728C-98515CBA906C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51149B89-1230-2D4C-728C-98515CBA906C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51149B89-1230-2D4C-728C-98515CBA906C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A9B4694E-F42D-41B4-BB7E-239AF3FFBF81}
+	EndGlobalSection
+EndGlobal
