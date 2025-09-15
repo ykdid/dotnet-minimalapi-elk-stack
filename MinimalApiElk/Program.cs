@@ -23,7 +23,9 @@ var elasticUrl = builder.Configuration["ElasticConfiguration:Uri"] ?? "http://lo
 var defaultIndex = builder.Configuration["ElasticConfiguration:DefaultIndex"] ?? "logs";
 
 var settings = new ConnectionSettings(new Uri(elasticUrl))
-    .DefaultIndex(defaultIndex);
+    .DefaultMappingFor<LogData>(m => m
+        .PropertyName(p => p.Timestamp, "@timestamp")
+    );
 
 var client = new ElasticClient(settings);
 
@@ -33,7 +35,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUrl))
     {
         AutoRegisterTemplate = true,
-        IndexFormat = $"{defaultIndex}-{DateTime.UtcNow:yyyy-MM}"
+        IndexFormat = $"app-logs-{DateTime.UtcNow:yyyy-MM}"
     })
     .CreateLogger();
 
@@ -45,13 +47,21 @@ app.MapPost("/api/logs", async (LogData logData) =>
 {
     try
     {
-        var indexName = $"{defaultIndex}-{DateTime.UtcNow:yyyy-MM}";
-        var response = await client.IndexDocumentAsync(logData);
+        var indexName = $"api-{defaultIndex}-{DateTime.UtcNow:yyyy-MM}";
+        
+        var response = await client.IndexAsync(logData, i => i
+            .Index(indexName)
+        );
         
         if (response.IsValid)
         {
-            Log.Information("Log data successfully indexed to Elasticsearch");
-            return Results.Ok(new { message = "Log data successfully stored", id = response.Id });
+            Log.Information("Log data successfully indexed to Elasticsearch in index {IndexName}", indexName);
+            return Results.Ok(new { 
+                message = "Log data successfully stored", 
+                id = response.Id,
+                index = response.Index,
+                attempted_index = indexName
+            });
         }
         
         Log.Error("Failed to index log data: {ErrorMessage}", response.DebugInformation);
