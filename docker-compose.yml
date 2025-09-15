@@ -5,6 +5,7 @@ services:
     build:
       context: ./MinimalApiElk
       dockerfile: Dockerfile
+    container_name: logger-api
     ports:
       - "5001:80"
     environment:

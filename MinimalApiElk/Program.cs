@@ -6,6 +6,8 @@ using Serilog.Sinks.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseUrls("http://+:80");
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
