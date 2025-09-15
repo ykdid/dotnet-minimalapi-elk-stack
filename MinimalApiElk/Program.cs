@@ -20,12 +20,18 @@ builder.Services.AddCors(options =>
 });
 
 var elasticUrl = builder.Configuration["ElasticConfiguration:Uri"] ?? "http://localhost:9200";
-var defaultIndex = builder.Configuration["ElasticConfiguration:DefaultIndex"] ?? "logs";
+var apiKey = builder.Configuration["ElasticConfiguration:ApiKey"];
+var indexPrefix = builder.Configuration["ElasticConfiguration:IndexPrefix"] ?? "logs";
 
 var settings = new ConnectionSettings(new Uri(elasticUrl))
     .DefaultMappingFor<LogData>(m => m
         .PropertyName(p => p.Timestamp, "@timestamp")
     );
+
+if (!string.IsNullOrEmpty(apiKey))
+{
+    settings = settings.BasicAuthentication("apikey", apiKey);
+}
 
 var client = new ElasticClient(settings);
 
@@ -45,11 +51,13 @@ var app = builder.Build();
 
 app.UseCors("AllowAll");
 
+app.MapGet("/api/health", () => Results.Ok(new { status = "healthy" }));
+
 app.MapPost("/api/logs", async (LogData logData) =>
 {
     try
     {
-        var indexName = $"api-{defaultIndex}-{DateTime.UtcNow:yyyy-MM}";
+        var indexName = $"api-{indexPrefix}-{DateTime.UtcNow:yyyy-MM}";
         
         var response = await client.IndexAsync(logData, i => i
             .Index(indexName)

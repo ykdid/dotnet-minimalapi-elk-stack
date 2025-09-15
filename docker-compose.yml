@@ -9,39 +9,10 @@ services:
     ports:
       - "5001:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ElasticConfiguration__Uri=http://elasticsearch:9200
-    depends_on:
-      - elasticsearch
-    networks:
-      - elk-network
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - xpack.security.enabled=false
-    ports:
-      - "9200:9200"
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    networks:
-      - elk-network
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.9
-    container_name: kibana
-    ports:
-      - "5601:5601"
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    depends_on:
-      - elasticsearch
-    networks:
-      - elk-network
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ElasticConfiguration__Uri=${ELASTICSEARCH_URL}
+      - ElasticConfiguration__ApiKey=${ELASTICSEARCH_API_KEY}
+      - ElasticConfiguration__IndexPrefix=${ELASTICSEARCH_INDEX_PREFIX}
 
 volumes:
   elasticsearch-data:
