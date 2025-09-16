@@ -6,22 +6,21 @@ using Serilog.Sinks.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://+:80");
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
     });
 });
 
-var elasticUrl = builder.Configuration["ElasticConfiguration:Uri"] ?? "http://localhost:9200";
+var elasticUrl = builder.Configuration["ElasticConfiguration:Uri"] 
+                 ?? "http://localhost:9200";
 var apiKey = builder.Configuration["ElasticConfiguration:ApiKey"];
-var indexPrefix = builder.Configuration["ElasticConfiguration:IndexPrefix"] ?? "logs";
+var indexPrefix = builder.Configuration["ElasticConfiguration:IndexPrefix"] 
+                  ?? "logs";
 
 var settings = new ConnectionSettings(new Uri(elasticUrl))
     .DefaultMappingFor<LogData>(m => m
@@ -30,7 +29,7 @@ var settings = new ConnectionSettings(new Uri(elasticUrl))
 
 if (!string.IsNullOrEmpty(apiKey))
 {
-    settings = settings.BasicAuthentication("apikey", apiKey);
+    settings = settings.ApiKeyAuthentication(new ApiKeyAuthenticationCredentials(apiKey));
 }
 
 var client = new ElasticClient(settings);
@@ -41,7 +40,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUrl))
     {
         AutoRegisterTemplate = true,
-        IndexFormat = $"app-logs-{DateTime.UtcNow:yyyy-MM}"
+        IndexFormat = $"{indexPrefix}-{DateTime.UtcNow:yyyy-MM}"
     })
     .CreateLogger();
 
@@ -57,23 +56,22 @@ app.MapPost("/api/logs", async (LogData logData) =>
 {
     try
     {
-        var indexName = $"api-{indexPrefix}-{DateTime.UtcNow:yyyy-MM}";
-        
-        var response = await client.IndexAsync(logData, i => i
-            .Index(indexName)
-        );
-        
+        var indexName = $"{indexPrefix}-{DateTime.UtcNow:yyyy-MM}";
+
+        var response = await client.IndexAsync(logData, i => i.Index(indexName));
+
         if (response.IsValid)
         {
             Log.Information("Log data successfully indexed to Elasticsearch in index {IndexName}", indexName);
-            return Results.Ok(new { 
-                message = "Log data successfully stored", 
+            return Results.Ok(new
+            {
+                message = "Log data successfully stored",
                 id = response.Id,
                 index = response.Index,
                 attempted_index = indexName
             });
         }
-        
+
         Log.Error("Failed to index log data: {ErrorMessage}", response.DebugInformation);
         return Results.BadRequest(new { message = "Failed to store log data", error = response.DebugInformation });
     }
