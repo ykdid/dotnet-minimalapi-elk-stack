@@ -70,10 +70,10 @@ curl -X POST http://localhost:5001/api/logs \
 1. Open Kibana at http://localhost:5601
 2. Navigate to Stack Management > Index Patterns
 3. Create new index patterns:
-    For api logs:
+    <br>For api logs:<br>
    - Pattern: `api-logs-*`
    - Timestamp field: `@timestamp`
-   For app logs:
+   <br>For app logs:<br>
    - Pattern: `app-logs-*`
    - Timestamp field: `@timestamp`
 
@@ -101,7 +101,3 @@ docker compose up elasticsearch kibana -d
 cd MinimalApiElk
 dotnet run
 ```
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
