@@ -69,9 +69,14 @@ curl -X POST http://localhost:5001/api/logs \
 
 1. Open Kibana at http://localhost:5601
 2. Navigate to Stack Management > Index Patterns
-3. Create a new index pattern:
-   - Pattern: `logs-*`
+3. Create new index patterns:
+    For api logs:
+   - Pattern: `api-logs-*`
    - Timestamp field: `@timestamp`
+   For app logs:
+   - Pattern: `app-logs-*`
+   - Timestamp field: `@timestamp`
+
 4. Go to Discover to view your logs
 
 ## Environment Variables
