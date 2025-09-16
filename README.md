@@ -70,7 +70,7 @@ curl -X POST http://localhost:5001/api/logs \
 1. Open Kibana at http://localhost:5601
 2. Navigate to Stack Management > Index Patterns
 3. Create new index patterns:
-    <br>For api logs:<br>
+   - <br>For api logs:<br>
    - Pattern: `api-logs-*`
    - Timestamp field: `@timestamp`
    <br>For app logs:<br>
